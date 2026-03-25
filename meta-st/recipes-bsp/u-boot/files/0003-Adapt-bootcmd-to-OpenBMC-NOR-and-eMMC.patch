@@ -1,0 +1,81 @@
+From 45ab119e2cb7b12094fc72d7ecac68ec0ffa1111 Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Mon, 24 Nov 2025 12:13:34 +0100
+Subject: [PATCH 1/2] Adapt bootcmd to OpenBMC - NOR and eMMC
+
+Upstream-Status: Pending
+
+Change-Id: I6f7d85ff06b53733eb83576066e73bd53bcb6188
+---
+ include/configs/stm32mp25_st_common.h | 44 +++++++++++++++++++++++++--
+ 1 file changed, 42 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/stm32mp25_st_common.h b/include/configs/stm32mp25_st_common.h
+index 579145fcc49..1587899d02b 100644
+--- a/include/configs/stm32mp25_st_common.h
++++ b/include/configs/stm32mp25_st_common.h
+@@ -8,11 +8,50 @@
+ #ifndef __CONFIG_STM32MP25_ST_COMMON_H__
+ #define __CONFIG_STM32MP25_ST_COMMON_H__
+ 
++#include <configs/stm32mp25_common.h>
++
+ #define STM32MP_BOARD_EXTRA_ENV \
+ 	"usb_pgood_delay=2000\0" \
+ 	"console=ttySTM0\0"
+ 
+-#include <configs/stm32mp25_common.h>
++#define STM32MP_OBMC_EXTRA_ENV \
++	"bootargs=rw earlyprintk earlycon console=ttySTM0,115200 \0" \
++	"bootside=a\0" \
++	"loadaddr=8a000000\0" \
++	"fitNorAddr=0x580000\0" \
++	"bootcmd=" \
++		"if test ${boot_device} = serial || test ${boot_device} = usb; then " \
++			"stm32prog ${boot_device} ${boot_instance}; " \
++		"else " \
++			"run env_check;" \
++		"fi;" \
++		"if test ${boot_device} = mmc; then " \
++			"setenv origbootargs ${bootargs}; run bootsidecmd; " \
++		"elif test ${boot_device} = nor; then " \
++			"run bootnorcmd; " \
++		"else " \
++			"echo \"Boot device chosen is not supported\"; " \
++		"fi;\0" \
++	"bootsidecmd=" \
++		"if test ${bootside} = b; then " \
++			"echo \"Boot over Bootside : B\"; " \
++			"run bootb; " \
++			"run boota; " \
++		"else " \
++			"echo \"Boot over Bootside : A\"; " \
++			"run boota; " \
++			"run bootb; " \
++		"fi;\0" \
++	"boota=setenv bootpart 6; setenv rootfs rofs-a; run bootmmc\0" \
++	"bootb=setenv bootpart 7; setenv rootfs rofs-b; run bootmmc\0" \
++	"bootmmc=run setmmcargs; ext4load mmc 1:${bootpart} ${loadaddr} fitImage && bootm ${loadaddr}; echo Error loading kernel FIT image; bootm ${loadaddr}; echo Error loading kernel FIT image\0" \
++	"setmmcargs=setenv bootargs ${origbootargs} rootwait root=PARTLABEL=${rootfs}\0" \
++	"bootnorcmd=" \
++		"mtd read nor1 ${loadaddr} ${fitNorAddr} 0x1000; " \
++		"fdt addr ${loadaddr}; " \
++		"fdt header get totalsize totalsize; " \
++		"mtd read nor1 ${loadaddr} ${fitNorAddr} ${totalsize}; " \
++		"bootm ${loadaddr}\0"
+ 
+ #ifdef CFG_EXTRA_ENV_SETTINGS
+ /*
+@@ -49,7 +88,8 @@
+ 	ST_STM32MP25_ALTBOOTCMD \
+ 	BOOTENV \
+ 	STM32MP_EXTRA \
+-	STM32MP_BOARD_EXTRA_ENV
++	STM32MP_BOARD_EXTRA_ENV \
++	STM32MP_OBMC_EXTRA_ENV
+ 
+ #endif
+ #endif
+-- 
+2.34.1
+

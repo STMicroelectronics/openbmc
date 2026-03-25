@@ -1,0 +1,28 @@
+From 89b3e366f3c8b61e31532d33e141f9692aa59389 Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Fri, 12 Dec 2025 11:21:37 +0100
+Subject: [PATCH 3/3] Alias added to set mmc0 to eMMC DK
+
+Upstream-Status: Inappropriate [Specific configuration]
+
+Change-Id: I90860097d9e2a226ae3c3c43e5cfa8db4eb30016
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index e9b72844145d..404f13562953 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -25,6 +25,8 @@ aliases {
+ 		serial1 = &usart6;
+ 		serial2 = &usart1;
+ 		ethernet0 = &eth1;
++		mmc0 = &sdmmc2;
++		mmc1 = &sdmmc1;
+ 	};
+ 
+ 	chosen {
+-- 
+2.34.1
+

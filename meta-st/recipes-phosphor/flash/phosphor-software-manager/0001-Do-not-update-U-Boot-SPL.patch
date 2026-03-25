@@ -1,0 +1,41 @@
+From 1d6c0ba2677becd18059895ebb7ca7cb65beaa8b Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Thu, 4 Dec 2025 10:51:57 +0100
+Subject: [PATCH] Do not update U-Boot SPL
+
+Upstream-Status: Inappropriate [Specific configuration]
+
+---
+ bmc/obmc-flash-bmc | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/bmc/obmc-flash-bmc b/bmc/obmc-flash-bmc
+index f9cc4e2..93565c0 100644
+--- a/bmc/obmc-flash-bmc
++++ b/bmc/obmc-flash-bmc
+@@ -576,14 +576,14 @@ function mmc_mount() {
+ 
+ function mmc_update() {
+     # Update u-boot if needed
+-    bootPartition="mmcblk0boot0"
+-    devUBoot="/dev/${bootPartition}"
+-    imgUBoot="${imgpath}/${version}/image-u-boot"
+-    if [ "$(cmp_uboot "${devUBoot}" "${imgUBoot}")" != "0" ]; then
+-        echo 0 > "/sys/block/${bootPartition}/force_ro"
+-        dd if="${imgUBoot}" of="${devUBoot}"
+-        echo 1 > "/sys/block/${bootPartition}/force_ro"
+-    fi
++    # bootPartition="mmcblk0boot0"
++    # devUBoot="/dev/${bootPartition}"
++    # imgUBoot="${imgpath}/${version}/image-u-boot"
++    # if [ "$(cmp_uboot "${devUBoot}" "${imgUBoot}")" != "0" ]; then
++    #     echo 0 > "/sys/block/${bootPartition}/force_ro"
++    #     dd if="${imgUBoot}" of="${devUBoot}"
++    #     echo 1 > "/sys/block/${bootPartition}/force_ro"
++    # fi
+ 
+     # Update the secondary (non-running) boot and rofs partitions.
+     label="$(mmc_get_secondary_label)"
+-- 
+2.34.1
+

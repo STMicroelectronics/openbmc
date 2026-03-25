@@ -122,6 +122,8 @@ include conf/distro/include/openbmc-phosphor/${MACHINE}.inc
 IMAGE_CLASSES:append = " image_types_phosphor phosphor-rootfs-postcommands"
 IMAGE_CLASSES:append:npcm7xx = " image_types_phosphor_nuvoton"
 IMAGE_CLASSES:append:npcm8xx = " image_types_phosphor_nuvoton_npcm8xx"
+IMAGE_CLASSES:remove:stm32mp2common = " image_types_phosphor"
+IMAGE_CLASSES:append:stm32mp2common = " image_types_phosphor_st phosphor-rootfs-postcommands"
 
 IMAGE_INSTALL:append = " dbus-broker libnss-systemd"
 

@@ -1,0 +1,48 @@
+From dc5ba51ab47f6fca703316eb645d73a0427ff7ac Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Wed, 4 Feb 2026 10:35:10 +0100
+Subject: [PATCH 2/2] Adapt flash nor fixed partition to openBMC
+
+Upstream-Status: Pending
+
+Change-Id: I469b94d1eec3cd25c40612b965ed33456da35d4e
+---
+ arch/arm/dts/stm32mp257f-ev1-u-boot.dtsi | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/dts/stm32mp257f-ev1-u-boot.dtsi b/arch/arm/dts/stm32mp257f-ev1-u-boot.dtsi
+index 48dd93e9f44..d8491f16816 100644
+--- a/arch/arm/dts/stm32mp257f-ev1-u-boot.dtsi
++++ b/arch/arm/dts/stm32mp257f-ev1-u-boot.dtsi
+@@ -53,16 +53,20 @@
+ 			reg = <0x00100000 0x00400000>;
+ 		};
+ 		partition@500000 {
+-			label = "fip-b";
+-			reg = <0x00500000 0x00400000>;
+-		};
+-		partition@900000 {
+ 			label = "u-boot-env";
+-			reg = <0x00900000 0x00080000>;
++			reg = <0x00500000 0x00080000>;
++		};
++		partition@580000 {
++			label = "kernel";
++			reg = <0x00580000 0x00C50000>;
++		};
++		partition@11D0000 {
++			label = "rofs";
++			reg = <0x011D0000 0x019F0000>;
+ 		};
+-		partition@980000 {
+-			label = "nor-user";
+-			reg = <0x00980000 0x03680000>;
++		partition@2BC0000 {
++			label = "rwfs";
++			reg = <0x02BC0000 0x01440000>;
+ 		};
+ 	};
+ };
+-- 
+2.34.1
+

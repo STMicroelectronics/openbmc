@@ -1,0 +1,59 @@
+From 32f556c4a377ecf1e8b0028e5f7153373dff2659 Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Fri, 12 Dec 2025 11:20:43 +0100
+Subject: [PATCH 2/3] Force USB PD mode to peripheral DK
+
+Upstream-Status: Inappropriate [Specific configuration]
+
+Change-Id: I98c75837a3195a86334dc4ee7cb72d451e0e0352
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 26 ++---------------------
+ 1 file changed, 2 insertions(+), 24 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index afa496cba944..e9b72844145d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -628,23 +628,6 @@ i2c_rpmsg: i2c@2 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
+-
+-		typec@35 {
+-			compatible = "st,stm32mp25-typec";
+-			reg = <0x35>;
+-			interrupts-extended = <&intc_rpmsg 0>;
+-			status = "okay";
+-			connector {
+-				compatible = "usb-c-connector";
+-				label = "USB-C";
+-
+-				port {
+-					typec_ep: endpoint {
+-						remote-endpoint = <&dwc3_ep>;
+-					};
+-				};
+-			};
+-		};
+ 	};
+ };
+ 
+@@ -840,13 +823,8 @@ &usb3dr {
+ 	status = "okay";
+ 
+ 	dwc3: usb@48300000 {
+-		phys            = <&usb2_phy2>, <&combophy PHY_TYPE_USB3>;
+-		phy-names       = "usb2-phy", "usb3-phy";
++		maximum-speed = "high-speed";
++		role-switch-default-mode = "peripheral";
+ 		usb-role-switch;
+-		port {
+-			dwc3_ep: endpoint {
+-				remote-endpoint = <&typec_ep>;
+-			};
+-		};
+ 	};
+ };
+-- 
+2.34.1
+

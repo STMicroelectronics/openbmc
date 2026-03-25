@@ -1,0 +1,27 @@
+From 617798a72f7b745c63f7d788537caff08379cdb0 Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Thu, 8 Jan 2026 17:01:05 +0100
+Subject: [PATCH] Use after free temporary hugly workaround
+
+Upstream-Status: Inappropriate [tmp workaround]
+
+---
+ bmc/item_updater.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bmc/item_updater.cpp b/bmc/item_updater.cpp
+index 8ee940e..b4fa0e4 100644
+--- a/bmc/item_updater.cpp
++++ b/bmc/item_updater.cpp
+@@ -554,7 +554,7 @@ void ItemUpdater::erase(std::string entryId)
+     auto updateManagerIt = updateManagers.find(entryId);
+     if (updateManagerIt != updateManagers.end())
+     {
+-        updateManagers.erase(entryId);
++        // updateManagers.erase(entryId);
+     }
+ 
+     return;
+-- 
+2.34.1
+

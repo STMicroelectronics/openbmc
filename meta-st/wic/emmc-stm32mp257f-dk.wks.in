@@ -1,0 +1,23 @@
+#  --- - -------- ------------- ------ ----------- -------- -------- -------- -------- ------ -------- -------
+# | | XXXX | Metadata(2) | FIPA | FIPB | | env | boot-a | boot-b | rofs-a | rofs-b | rwfs | hostfw |GPT-sec|
+#  --- - -------- ------------- ------ ----------- -------- -------- -------- -------- ------ -------- -------
+
+bootloader --ptable gpt
+
+# Metadata partitions
+part metadata1 --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=metadata1 --sourceparams="file=${DEPLOY_DIR_IMAGE}/arm-trusted-firmware/metadata.bin" --ondisk mmcblk --fixed-size 512K
+part metadata2 --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=metadata2 --sourceparams="file=${DEPLOY_DIR_IMAGE}/arm-trusted-firmware/metadata.bin" --ondisk mmcblk --fixed-size 512K
+
+# Fip partitions
+part fip-a   --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fip-a --sourceparams="file=${DEPLOY_DIR_IMAGE}/fip/fip-stm32mp257f-dk-optee-emmc.bin" --ondisk mmcblk --part-type 19d5df83-11b0-457b-be2c-7559c13142a5 --fixed-size 4096K --uuid 4fd84c93-54ef-463f-a7ef-ae25ff887087
+part fip-b   --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fip-b --sourceparams="file=${DEPLOY_DIR_IMAGE}/fip/fip-stm32mp257f-dk-optee-emmc.bin" --ondisk mmcblk --part-type 19d5df83-11b0-457b-be2c-7559c13142a5 --fixed-size 4096K --uuid 09c54952-d5bf-45af-acee-335303766fb3
+
+# U-BOOT env
+part u-boot-env --source empty --part-name=u-boot-env --ondisk mmcblk --fixed-size 512K
+
+part --fstype=ext4 --fixed-size 64M --source bootimg-partition --label boot-a
+part --fstype=ext4 --fixed-size 64M --source bootimg-partition --label boot-b
+part --fstype=ext4 --fixed-size 1G --source rootfs --label rofs-a
+part --fstype=ext4 --fixed-size 1G --source rootfs --label rofs-b
+part --fstype=ext4 --fixed-size 1G --label rwfs
+part --fstype=ext4 --fixed-size 512M --source rootfs --rootfs-dir=${DEPLOY_DIR_IMAGE}/hostfw/image/ --label hostfw
